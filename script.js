@@ -63,3 +63,19 @@ function caesarCipher(text, shift) {
 
     return result;
 }
+
+function usarResultado() {
+    // Pega o elemento que mostra o resultado
+    const saidaResultado = document.getElementById('result');
+
+    // Pega a caixa de texto da mensagem
+    const entradaMensagem = document.getElementById('message');
+
+    // Pega o texto que está no resultado
+    const textoResultado = saidaResultado.textContent;
+
+    // Se houver algum texto no resultado, coloca ele na caixa de mensagem
+    if (textoResultado) {
+        entradaMensagem.value = textoResultado;
+    }
+}

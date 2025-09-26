@@ -12,12 +12,12 @@ Este é um projeto web interativo que implementa a Cifra de César, uma das mais
 
 ## Sobre o Projeto
 
-Este trabalho foi desenvolvido como parte das **Atividades Práticas Supervisionadas (APS)** para o curso de Ciência da Computação da UNICEUG. [cite_start]O objetivo era aplicar conceitos de programação estruturada em um projeto prático que abordasse o tema de técnicas criptográficas. [cite: 2, 6, 8]
+Este trabalho foi desenvolvido como parte das **Atividades Práticas Supervisionadas (APS)** para o curso de Ciência da Computação da UNICEUG. O objetivo era aplicar conceitos de programação estruturada em um projeto prático que abordasse o tema de técnicas criptográficas. 
 
 * **Instituição:** UNICEUG
-* [cite_start]**Curso:** 2º Ciência da Computação [cite: 1]
-* [cite_start]**Disciplina Vinculada:** Introdução à Programação Estruturada – IPE [cite: 30]
-* [cite_start]**Tema Proposto:** "AS TÉCNICAS CRIPTOGRÁFICAS, CONCEITOS, USOS E APLICAÇÕES" [cite: 8]
+* **Curso:** Ciência da Computação 
+* **Disciplina Vinculada:** Introdução à Programação Estruturada – IPE 
+* **Tema Proposto:** "AS TÉCNICAS CRIPTOGRÁFICAS, CONCEITOS, USOS E APLICAÇÕES" 
 
 ---
 
@@ -26,7 +26,7 @@ Este trabalho foi desenvolvido como parte das **Atividades Práticas Supervision
 * **Criptografia de Texto:** Converte um texto legível em um texto cifrado.
 * **Descriptografia de Texto:** Reverte o texto cifrado para sua forma original.
 * **Chave Personalizável:** Permite ao usuário escolher uma chave de deslocamento entre 1 e 25.
-* [cite_start]**Limite de Caracteres:** O campo de mensagem aceita textos de até 128 caracteres, conforme especificado no projeto. [cite: 26]
+***Limite de Caracteres:** O campo de mensagem aceita textos de até 128 caracteres, conforme especificado no projeto. 
 * **Interface Responsiva:** O layout se adapta a diferentes tamanhos de tela.
 
 ---

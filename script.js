@@ -26,7 +26,7 @@ function processMessage(isEncrypt) {
     const shift = isEncrypt ? key : -key;
 
     // Chama a função da Cifra de César e exibe o resultado
-    resultOutput.textContent = caesarCipher(message, shift);
+        resultOutput.textContent = caesarCipher(message, shift);
 }
 
 /**

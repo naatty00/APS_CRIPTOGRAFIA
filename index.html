@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APS - Criptografia com Cifra de César</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="conteudo-principal">
+        <div class="caixa">
+            <header>
+                <h1>APS - Criptografia com Cifra de César</h1>
+            </header>
+
+            <section class="formulario-cripto">
+                <div class="grupo-formulario">
+                    <label for="message">Mensagem (até 128 caracteres):</label>
+                    <textarea id="message" rows="4" maxlength="128" placeholder="Digite a sua mensagem aqui..."></textarea>
+                </div>
+
+                <div class="grupo-formulario">
+                    <label for="key">Chave de Deslocamento (1-25):</label>
+                    <input type="number" id="key" min="1" max="25" value="3">
+                </div>
+
+                <div class="botoes">
+                    <button onclick="processMessage(true)">Criptografar</button>
+                    <button onclick="processMessage(false)">Descriptografar</button>
+                </div>
+
+            <div class="area-resultado">
+             <h3>Resultado:</h3>
+                <p id="result"></p>
+             </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>Desenvolvido por: (Nataly, Fernanda, Gabriel, Lucas e Raiatty) 
+            <br> Ciência da Computação - UNICEUG</p>
+        <div class="redes-sociais">
+            <a href="https://www.instagram.com/uniceug/" target="_blank" title="Instagram da UNICEUG">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://www.facebook.com/uniceug" target="_blank" title="Facebook da UNICEUG">
+                <i class="fa-brands fa-facebook"></i>
+            </a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

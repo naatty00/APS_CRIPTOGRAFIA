@@ -79,3 +79,33 @@ function usarResultado() {
         entradaMensagem.value = textoResultado;
     }
 }
+
+// --- LÓGICA PARA A TRANSIÇÃO DA TELA INICIAL ---
+
+// Pega os elementos principais da página
+const telaInicial = document.getElementById('tela-inicial');
+const botaoInicial = document.getElementById('botao-inicial');
+const appPrincipal = document.getElementById('app-principal');
+const rodape = document.getElementById('rodape');
+
+// Adiciona um "ouvinte" de clique no botão inicial
+botaoInicial.addEventListener('click', () => {
+
+    // Adiciona uma classe para a animação de "fade-out" na tela inicial
+    telaInicial.classList.add('fade-out');
+
+    // Espera a animação de saída terminar (500ms = 0.5s)
+    setTimeout(() => {
+        // Esconde de vez a tela inicial
+        telaInicial.style.display = 'none';
+
+        // Mostra a aplicação principal e o rodapé
+        appPrincipal.classList.remove('escondido');
+        rodape.classList.remove('escondido');
+        
+        // Adiciona a classe para a animação de "fade-in"
+        appPrincipal.classList.add('fade-in');
+        rodape.classList.add('fade-in');
+
+    }, 500);
+});

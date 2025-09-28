@@ -3,23 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APS - Criptografia com Cifra de César</title>
-    
+    <title>APS - Criptografia</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="icon" type="image/png" href="images/cryptography.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <main class="conteudo-principal">
+
+    <div id="tela-inicial" class="tela-inicial">
+        <button id="botao-inicial" class="botao-neon">
+    <span>
+        <i class="fa-solid fa-user-secret"></i>
+        Criptografia
+        <i class="fa-solid fa-user-secret"></i>
+    </span>
+</button>
+    </div>
+
+    <main id="app-principal" class="conteudo-principal escondido">
         <div class="caixa">
             <header>
-                <h1>APS - Criptografia com Cifra de César</h1>
+                <h1><i class="fa-solid fa-lock"></i> Criptografia - Cifra de César</h1>
             </header>
 
             <section class="formulario-cripto">
                 <div class="grupo-formulario">
                     <label for="message">Mensagem (até 128 caracteres):</label>
-                    <textarea id="message" rows="4" maxlength="128" placeholder="Digite a sua mensagem aqui..."></textarea>
+                    <textarea id="message" rows="4" maxlength="128" placeholder="Digite sua mensagem aqui..."></textarea>
                 </div>
 
                 <div class="grupo-formulario">
@@ -32,31 +42,18 @@
                     <button onclick="processMessage(false)">Descriptografar</button>
                 </div>
 
-            <div class="area-resultado">
-               <div class="area-resultado-cabecalho">
-                <h3>Resultado:</h3>
-                <button onclick="usarResultado()" class="botao-usar-resultado" title="Copiar resultado para a mensagem">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </button>
-                 </div>
-                     <p id="result"></p>
-                       </div>
+                <div class="area-resultado">
+                    <div class="area-resultado-cabecalho">
+                        <h3>Resultado:</h3>
+                        <button onclick="usarResultado()" class="botao-usar-resultado" title="Copiar resultado para a mensagem">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </button>
+                    </div>
+                    <p id="result"></p>
+                </div>
             </section>
         </div>
     </main>
-
-    <footer>
-        <p>Desenvolvido por: (Nataly, Fernanda, Gabriel, Lucas e Raiatty) 
-            <br> Ciência da Computação - UNICEUG</p>
-        <div class="redes-sociais">
-            <a href="https://www.instagram.com/uniceug_oficial/" target="_blank" title="Instagram da UNICEUG">
-                <i class="fa-brands fa-instagram"></i>
-            </a>
-            <a href="https://www.facebook.com/uniceugoficial/?locale=pt_BR" target="_blank" title="Facebook da UNICEUG">
-                <i class="fa-brands fa-facebook"></i>
-            </a>
-        </div>
-    </footer>
 
     <script src="script.js"></script>
 </body>

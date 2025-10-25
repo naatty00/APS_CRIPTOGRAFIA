@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, scrolledtext, messagebox, filedialog # Import filedialog
+from tkinter import ttk, scrolledtext, messagebox, filedialog
 import ttkbootstrap as tb
 from ttkbootstrap.scrolled import ScrolledFrame
 from tkinter.ttk import Checkbutton
@@ -17,10 +17,9 @@ def gerar_chave():
     return chave
 
 def salvar_chave(chave, nome_arquivo="chave.json"):
-    # Garante que o diretório existe (caso o nome_arquivo inclua um caminho)
     diretorio = os.path.dirname(nome_arquivo)
     if diretorio and not os.path.exists(diretorio):
-        os.makedirs(diretorio) # Cria diretórios se não existirem
+        os.makedirs(diretorio)
     with open(nome_arquivo, "w") as f:
         json.dump(chave, f)
 
@@ -36,19 +35,18 @@ def carregar_chave(nome_arquivo="chave.json"):
                     return None
         except json.JSONDecodeError as e:
              print(f"Erro ao decodificar JSON em {nome_arquivo}: {e}")
-             raise # Re-lança para ser pego no load_key_action
+             raise
         except Exception as e:
             print(f"Erro inesperado ao ler chave de {nome_arquivo}: {e}")
-            raise # Re-lança para ser pego no load_key_action
+            raise
     else:
         return None
 
 def criptografar(texto, chave):
     resultado = ''
-    # Verifica se a chave é válida antes de usar
     if not isinstance(chave, dict):
         messagebox.showerror("Erro de Chave", "Nenhuma chave válida carregada para criptografar.")
-        return texto # Retorna o texto original se não há chave
+        return texto
 
     for char in texto.upper():
         if char in chave:
@@ -65,7 +63,7 @@ def inverter_chave(chave):
 def descriptografar(texto_cifrado, chave):
     chave_inversa = inverter_chave(chave)
     resultado = ''
-    if not isinstance(chave, dict) or not chave_inversa : # Verifica chave original e inversa
+    if not isinstance(chave, dict) or not chave_inversa :
         messagebox.showerror("Erro de Chave", "Nenhuma chave válida carregada para descriptografar.")
         return texto_cifrado
 
@@ -95,7 +93,6 @@ class CryptoApp:
         except NameError:
             self.script_dir = os.getcwd()
 
-        # Define o caminho padrão inicial
         self.nome_arquivo_chave = "chave.json"
         self.caminho_completo_chave = os.path.join(self.script_dir, self.nome_arquivo_chave)
 
@@ -219,20 +216,14 @@ class CryptoApp:
         tb.Label(self.key_frame, text="Arquivo da Chave:").pack(anchor='w', pady=(0, 5))
         key_inner_frame = tb.Frame(self.key_frame)
         key_inner_frame.pack(fill='x')
-
-        # Variavel para mostrar o nome do arquivo carregado
         self.key_file_var = tk.StringVar(value=self.nome_arquivo_chave)
         self.key_entry = tb.Entry(key_inner_frame, textvariable=self.key_file_var,
                                   font=('Arial', 10), state='readonly')
         self.key_entry.pack(side='left', fill='x', expand=True, ipady=4, padx=(0, 10))
-
-        # Botão Carregar agora chama a nova função com filedialog
         self.load_key_button = tb.Button(key_inner_frame, text="Carregar Chave",
-                                         command=self.load_key_from_file_dialog, # <-- MUDANÇA AQUI
+                                         command=self.load_key_from_file_dialog,
                                          style='custom.Outline.TButton')
         self.load_key_button.pack(side='left', padx=5)
-
-        # Botão Gerar Nova
         self.gen_key_button = tb.Button(key_inner_frame, text="Gerar Nova",
                                         command=self.gen_key_action,
                                         style='custom.Outline.TButton')
@@ -242,9 +233,7 @@ class CryptoApp:
                                      style='danger.TLabel', padding=(10, 10))
         self.status_label.pack(fill='x', expand=False, pady=(10, 0))
 
-        # Tenta carregar a chave padrão ao iniciar
         self.load_default_key_on_start()
-
 
     def toggle_advanced_options(self):
         if self.show_adv_var.get():
@@ -292,20 +281,16 @@ class CryptoApp:
     def update_key_status(self):
         if not self.limit_warning_shown:
             if self.chave:
-                # Mostra apenas o nome do arquivo, não o caminho completo
                 file_display_name = os.path.basename(self.caminho_completo_chave)
                 self.update_status(f"✅ Chave '{file_display_name}' carregada com sucesso.", "info")
             else:
                 self.update_status(f"⚠️ Nenhuma chave '{self.nome_arquivo_chave}' encontrada ou selecionada. Gere uma nova.", "danger")
 
-
-    # --- [!!! FUNÇÃO ATUALIZADA !!!] ---
     def gen_key_action(self):
         try:
-            # Define o caminho para o arquivo padrão
             self.caminho_completo_chave = os.path.join(self.script_dir, "chave.json")
             self.nome_arquivo_chave = "chave.json"
-            self.key_file_var.set(self.nome_arquivo_chave) # Atualiza o campo de texto
+            self.key_file_var.set(self.nome_arquivo_chave)
 
             self.chave = gerar_chave()
             salvar_chave(self.chave, self.caminho_completo_chave)
@@ -314,63 +299,53 @@ class CryptoApp:
         except Exception as e:
             messagebox.showerror("Erro ao Gerar Chave", f"Não foi possível gerar ou salvar a chave:\n{e}")
 
-    # --- [!!! FUNÇÃO RENOMEADA E ATUALIZADA !!!] ---
     def _load_key_logic(self, file_path):
-        """Lógica interna para carregar a chave de um caminho específico."""
         chave_carregada_com_sucesso = False
         try:
             chave_data = carregar_chave(file_path)
-            if chave_data is not None: # carregar_chave agora retorna None se não for dict
+            if chave_data is not None:
                  self.chave = chave_data
-                 self.caminho_completo_chave = file_path # Atualiza o caminho atual
-                 self.nome_arquivo_chave = os.path.basename(file_path) # Atualiza o nome base
-                 self.key_file_var.set(self.nome_arquivo_chave) # Atualiza o campo de texto
+                 self.caminho_completo_chave = file_path
+                 self.nome_arquivo_chave = os.path.basename(file_path)
+                 self.key_file_var.set(self.nome_arquivo_chave)
                  chave_carregada_com_sucesso = True
             else:
                  self.chave = None
-                 if os.path.exists(file_path): # Se o arquivo existe mas não era válido
+                 if os.path.exists(file_path):
                      messagebox.showerror("Erro de Formato", f"O arquivo '{os.path.basename(file_path)}' não contém um dicionário de chave válido.")
 
             self.update_key_status()
 
             if chave_carregada_com_sucesso:
                  messagebox.showinfo("Sucesso", f"Chave carregada com sucesso de:\n{file_path}")
-            # Se não carregou, a barra de status ou popup de erro já informou
 
         except json.JSONDecodeError as e:
              messagebox.showerror("Erro ao Carregar Chave", f"Erro ao decodificar o arquivo '{os.path.basename(file_path)}'.\nNão parece ser um JSON válido.\nDetalhe: {e}")
              self.chave = None
-             self.caminho_completo_chave = os.path.join(self.script_dir, "chave.json") # Volta pro padrão
+             self.caminho_completo_chave = os.path.join(self.script_dir, "chave.json")
              self.nome_arquivo_chave = "chave.json"
              self.key_file_var.set(self.nome_arquivo_chave)
              self.update_key_status()
         except Exception as e:
             messagebox.showerror("Erro ao Carregar Chave", f"Não foi possível ler o arquivo da chave:\n{e}")
             self.chave = None
-            self.caminho_completo_chave = os.path.join(self.script_dir, "chave.json") # Volta pro padrão
+            self.caminho_completo_chave = os.path.join(self.script_dir, "chave.json")
             self.nome_arquivo_chave = "chave.json"
             self.key_file_var.set(self.nome_arquivo_chave)
             self.update_key_status()
 
-    # --- [!!! NOVA FUNÇÃO PARA O BOTÃO CARREGAR !!!] ---
     def load_key_from_file_dialog(self):
-        """Abre o explorador de arquivos para o usuário selecionar um arquivo JSON."""
-        # Abre o diálogo para escolher um arquivo .json
         file_path = filedialog.askopenfilename(
             title="Selecionar Arquivo da Chave",
-            initialdir=self.script_dir, # Começa na pasta do script
+            initialdir=self.script_dir,
             filetypes=[("Arquivos JSON", "*.json"), ("Todos os Arquivos", "*.*")]
         )
-        # Se o usuário selecionou um arquivo (não cancelou)
         if file_path:
-            self._load_key_logic(file_path) # Chama a lógica de carregamento com o caminho escolhido
+            self._load_key_logic(file_path)
         else:
-             print("Seleção de arquivo cancelada.") # Opcional: Avisa no console
+             print("Seleção de arquivo cancelada.")
 
-
-    # --- [!!! NOVA FUNÇÃO PARA CARREGAR NO INÍCIO !!!] ---
     def load_default_key_on_start(self):
-         """Tenta carregar a chave 'chave.json' padrão ao iniciar, sem popups."""
          default_path = os.path.join(self.script_dir, "chave.json")
          if os.path.exists(default_path):
              try:
@@ -388,9 +363,8 @@ class CryptoApp:
                  self.chave = None
          else:
              self.chave = None
-         self.update_key_status() # Atualiza a barra de status inicial
+         self.update_key_status()
 
-    # --- Métodos encrypt/decrypt (sem alteração da lógica principal) ---
     def encrypt_action(self):
         if not self.chave:
             messagebox.showwarning("Chave não Encontrada", "Por favor, carregue ou gere uma chave primeiro.")
@@ -415,10 +389,8 @@ class CryptoApp:
             return
         try:
             plain_text = descriptografar(cipher_text, self.chave)
-             # Verifica se descriptografar retornou algo (pode retornar o texto cifrado se a chave for inválida)
-            if plain_text != cipher_text or self.chave : # Se houve mudança ou a chave é válida
+            if plain_text != cipher_text or self.chave :
                 self.display_output(plain_text)
-            # Se não, o erro já foi mostrado dentro de descriptografar
         except Exception as e:
             messagebox.showerror("Erro de Descriptografia", f"Ocorreu um erro: {e}")
 
@@ -435,4 +407,3 @@ if __name__ == "__main__":
     app = tb.Window(themename="superhero")
     CryptoApp(app)
     app.mainloop()
-

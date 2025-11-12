@@ -102,7 +102,6 @@ class CryptoApp:
         except Exception as e:
             print(f"--- ERRO AO CARREGAR 'icone.ico' ---")
             print(f"Erro: {e}")
-            print(f"Verifique se o arquivo 'icone.ico' está em: {self.script_dir}")
 
         self.root.configure(bg=self.MAIN_BG)
         self.chave = None
@@ -118,6 +117,10 @@ class CryptoApp:
         style.configure('TLabel', font=default_font, foreground=self.LABEL_TEXT, background=self.MAIN_BG)
         style.configure('info.TLabel', font=('Arial', 10, 'bold'), foreground=self.NEON_TEXT, background=self.MAIN_BG)
         style.configure('danger.TLabel', font=('Arial', 10, 'bold'), background=self.MAIN_BG)
+        
+        # Estilo para o novo contador
+        style.configure('counter.TLabel', font=('Arial', 10, 'bold'), foreground=self.BUTTON_BLUE, background=self.MAIN_BG)
+        
         style.configure('TEntry',
                         fieldbackground=self.TEXT_BOX_BG,
                         foreground=self.NEON_TEXT,
@@ -157,6 +160,10 @@ class CryptoApp:
         input_header_frame.pack(fill='x', expand=True, pady=(0, 5))
 
         tb.Label(input_header_frame, text="Entrada de Dados (Máx. 128 caracteres):").pack(side='left', anchor='w')
+        
+        # --- Alteração: Contador com texto completo ---
+        self.char_counter_label = tb.Label(input_header_frame, text="Contador de Caracteres: 0/128", style='counter.TLabel')
+        self.char_counter_label.pack(side='right', anchor='e', padx=(0, 10))
 
         self.input_text = scrolledtext.ScrolledText(input_frame, wrap=tk.WORD, height=5,
                                                      bg=self.TEXT_BOX_BG, fg=self.NEON_TEXT,
@@ -220,20 +227,27 @@ class CryptoApp:
         self.key_entry = tb.Entry(key_inner_frame, textvariable=self.key_file_var,
                                   font=('Arial', 10), state='readonly')
         self.key_entry.pack(side='left', fill='x', expand=True, ipady=4, padx=(0, 10))
+        
         self.load_key_button = tb.Button(key_inner_frame, text="Carregar Chave",
                                          command=self.load_key_from_file_dialog,
                                          style='custom.Outline.TButton')
         self.load_key_button.pack(side='left', padx=5)
-        self.gen_key_button = tb.Button(key_inner_frame, text="Gerar Nova",
-                                        command=self.gen_key_action,
-                                        style='custom.Outline.TButton')
-        self.gen_key_button.pack(side='left', padx=(5, 0))
+        
+        # --- Alteração: Botão "Gerar Nova" foi removido ---
+        # self.gen_key_button = tb.Button(...)
+        # self.gen_key_button.pack(...)
 
-        self.status_label = tb.Label(scroll_container, text="Carregue ou gere uma chave para começar.",
-                                     style='danger.TLabel', padding=(10, 10))
+        self.status_label = tb.Label(scroll_container, text="Carregue uma chave para começar.",
+                                     style='danger.TLabel', padding=(10, 5))
         self.status_label.pack(fill='x', expand=False, pady=(10, 0))
 
+        # --- Alteração: Label dedicado para o erro de limite ---
+        self.error_label = tb.Label(scroll_container, text="",
+                                     style='danger.TLabel', padding=(0, 5))
+        self.error_label.pack(fill='x', expand=False, pady=(0, 5))
+
         self.load_default_key_on_start()
+        self.check_input_limit() # Para inicializar o contador em 0/128
 
     def toggle_advanced_options(self):
         if self.show_adv_var.get():
@@ -257,6 +271,7 @@ class CryptoApp:
         try:
             text = self.input_text.get("1.0", "end-1c")
             length = len(text)
+            
             if length > 128:
                 cursor_pos = self.input_text.index(tk.INSERT)
                 text = text[:128]
@@ -266,38 +281,39 @@ class CryptoApp:
                     self.input_text.mark_set(tk.INSERT, "1.128")
                 else:
                     self.input_text.mark_set(tk.INSERT, cursor_pos)
+                
                 if not self.limit_warning_shown:
                     messagebox.showwarning("Limite Atingido",
                                          "A entrada de dados está limitada a 128 caracteres.")
                     self.limit_warning_shown = True
-                self.update_status("ERRO: Limite de 128 caracteres atingido.", "danger")
+                
+                # --- Alteração: Escreve no label de erro dedicado ---
+                self.error_label.config(text="ERRO: Limite de 128 caracteres atingido.")
+                
+                length = 128
             else:
                 self.limit_warning_shown = False
-                if "Limite" in self.status_label.cget("text"):
-                    self.update_key_status()
+                
+                # --- Alteração: Limpa o label de erro ---
+                self.error_label.config(text="")
+
+            # --- Alteração: Atualiza o contador com texto completo ---
+            self.char_counter_label.config(text=f"Contador de Caracteres: {length}/128")
+
         except Exception as e:
             print(f"Erro no check_input_limit: {e}")
 
     def update_key_status(self):
-        if not self.limit_warning_shown:
-            if self.chave:
-                file_display_name = os.path.basename(self.caminho_completo_chave)
-                self.update_status(f"✅ Chave '{file_display_name}' carregada com sucesso.", "info")
-            else:
-                self.update_status(f"⚠️ Nenhuma chave '{self.nome_arquivo_chave}' encontrada ou selecionada. Gere uma nova.", "danger")
+        # --- Alteração: O status da chave é independente do erro de limite ---
+        if self.chave:
+            file_display_name = os.path.basename(self.caminho_completo_chave)
+            self.update_status(f"✅ Chave '{file_display_name}' carregada com sucesso.", "info")
+        else:
+            self.update_status(f"⚠️ Nenhuma chave carregada. Por favor carregue um arquivo.", "danger")
 
-    def gen_key_action(self):
-        try:
-            self.caminho_completo_chave = os.path.join(self.script_dir, "chave.json")
-            self.nome_arquivo_chave = "chave.json"
-            self.key_file_var.set(self.nome_arquivo_chave)
-
-            self.chave = gerar_chave()
-            salvar_chave(self.chave, self.caminho_completo_chave)
-            self.update_key_status()
-            messagebox.showinfo("Sucesso", f"Nova chave gerada e salva com sucesso em:\n{self.caminho_completo_chave}")
-        except Exception as e:
-            messagebox.showerror("Erro ao Gerar Chave", f"Não foi possível gerar ou salvar a chave:\n{e}")
+    # --- Alteração: Ação de gerar chave removida ---
+    # def gen_key_action(self):
+    #     ...
 
     def _load_key_logic(self, file_path):
         chave_carregada_com_sucesso = False
@@ -367,7 +383,7 @@ class CryptoApp:
 
     def encrypt_action(self):
         if not self.chave:
-            messagebox.showwarning("Chave não Encontrada", "Por favor, carregue ou gere uma chave primeiro.")
+            messagebox.showwarning("Chave não Encontrada", "Por favor, carregue uma chave primeiro.")
             return
         plain_text = self.input_text.get("1.0", tk.END).strip()
         if not plain_text:
@@ -381,7 +397,7 @@ class CryptoApp:
 
     def decrypt_action(self):
         if not self.chave:
-            messagebox.showwarning("Chave não Encontrada", "Por favor, carregue ou gere uma chave primeiro.")
+            messagebox.showwarning("Chave não Encontrada", "Por favor, carregue uma chave primeiro.")
             return
         cipher_text = self.input_text.get("1.0", tk.END).strip()
         if not cipher_text:
